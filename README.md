@@ -2,8 +2,8 @@
 
 A new Flutter project.
 
-## check the UI desgin used down here 👇🏻
-[Click Me(https://imgur.com/a/6FdXL0H)]
+## UI design 👇🏻
+Click the link [here](https://imgur.com/a/6FdXL0H) to view👀
 
 
 This project is a starting point for a Flutter application.
