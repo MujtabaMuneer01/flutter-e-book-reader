@@ -18,14 +18,13 @@ class _CartoonButtonState extends State<CartoonButton>
     super.initState();
     _controller = AnimationController(
         vsync: this, duration: (const Duration(milliseconds: 100)));
-    animationOfPosition = Tween(begin: 13.0, end: 20.0).animate(
-         _controller);
+    animationOfPosition = Tween(begin: 13.0, end: 20.0).animate(_controller);
   }
 
   @override
   void dispose() {
-    super.dispose();
     _controller.dispose();
+    super.dispose();
   }
 
   bool pressed = false;
@@ -33,7 +32,7 @@ class _CartoonButtonState extends State<CartoonButton>
   Widget build(BuildContext context) => AnimatedBuilder(
         animation: _controller,
         builder: (context, child) => GestureDetector(
-          onTapUp: widget.function,
+          onTapUp:  widget.function ,
           onTap: () {
             setState(() {
               _controller.forward().then((_) => _controller.reverse());

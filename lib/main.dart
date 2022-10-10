@@ -1,8 +1,14 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:zaynabiyat/k_constants.dart';
+import 'package:zaynabiyat/screens/all_books_screen.dart';
+import 'package:zaynabiyat/screens/opened_book_screen.dart';
 import 'package:zaynabiyat/utility/firestore_utility.dart';
+import 'package:zaynabiyat/utility/reading_utility.dart';
 import 'package:zaynabiyat/widgets/cartoon_button.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -10,6 +16,7 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -24,6 +31,7 @@ class MainScreen extends StatelessWidget {
   final controller = Get.put(FireStoreUtility());
   MainScreen({super.key});
   CarouselController carouselController = CarouselController();
+  final readingUtility = Get.put(ReadingUtility());
   @override
   Widget build(BuildContext context) => Scaffold(
         body: SafeArea(
@@ -41,7 +49,7 @@ class MainScreen extends StatelessWidget {
                       Container(
                         margin: const EdgeInsets.only(bottom: 32),
                         child: Text(
-                          'قصص جديدة',
+                          'قصص قصيرة',
                           style:
                               TextStyle(fontFamily: kElMessiri, fontSize: 31),
                         ),
@@ -57,21 +65,31 @@ class MainScreen extends StatelessWidget {
                             viewportFraction: 0.55),
                         itemBuilder: (context, index, realIndex) => Column(
                           children: [
-                            ///Image
-                            Container(
-                              width: 250,
-                              height: 300,
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      image: NetworkImage(
-                                        controller.storiesList[index]
-                                            ['storyCover'],
-                                      ),
-                                      fit: BoxFit.cover),
-                                  border: Border.all(width: 1.5),
-                                  borderRadius: BorderRadius.circular(32),
-                                  color:
-                                      const Color.fromARGB(255, 145, 145, 145)),
+                            ///Image+
+                            ///
+                            GestureDetector(
+                              onTapUp: (_) => Get.to(() => OpenBookScreen(
+                                    bookTitle: controller.storiesList[index]
+                                        ['storyTitle'],
+                                  )),
+                              onTap: () => readingUtility.extractFromUrl(
+                                  controller.storiesList[index]
+                                      ['storyContent']),
+                              child: Container(
+                                width: 250,
+                                height: 300,
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: NetworkImage(
+                                          controller.storiesList[index]
+                                              ['storyCover'],
+                                        ),
+                                        fit: BoxFit.cover),
+                                    border: Border.all(width: 1.5),
+                                    borderRadius: BorderRadius.circular(32),
+                                    color: const Color.fromARGB(
+                                        255, 145, 145, 145)),
+                              ),
                             ),
 
                             ///Title
@@ -93,7 +111,7 @@ class MainScreen extends StatelessWidget {
                   ),
 
                   ///Button
-                  const CartoonButton()
+                  CartoonButton(function: (_) => Get.to(() => AllBookScreen()))
                 ],
               );
             } else {
